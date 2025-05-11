@@ -1,16 +1,17 @@
 #pragma once
 #include <string>
 #include <sqlite3.h>
+#include "IDatabase.h"
 
-class SQLiteDatabase {
+class SQLiteDatabase : public IDatabase {
 private:
     std::string dbPath;
     sqlite3* db;
     bool executeSQL(const std::string& sql);
 public:
     explicit SQLiteDatabase(const std::string& dbPath);
-    ~SQLiteDatabase();
+    ~SQLiteDatabase() override;
 
-    bool connect();
-    void disconnect();
+    bool connect() override;
+    void disconnect() override;
 };
