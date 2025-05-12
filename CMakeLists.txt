@@ -21,6 +21,9 @@ include_directories(
 
 set(SOURCES
     BankDepositSelectionSystem.cpp
+    src/Client.cpp
+    src/Deposit.cpp
+    src/Bank.cpp
     src/Database/SQLiteDatabase.cpp
 )
 

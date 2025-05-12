@@ -21,4 +21,14 @@ public:
         double minAmount, bool replenishable, bool withdrawable,
         bool capitalization, const std::string& bankName,
         bool earlyWithdrawal = false);
+
+    int getId() const;
+    std::string getName() const;
+    double getInterestRate() const;
+    int getTermMonths() const;
+    double getMinAmount() const;
+    bool isReplenishable() const;
+    bool isWithdrawable() const;
+    bool hasCapitalization() const;
+    std::string getBankName() const;
 };

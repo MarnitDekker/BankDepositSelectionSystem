@@ -9,4 +9,9 @@ private:
     bool needWithdrawable;
 public:
     Client(double amount, int term, bool needReplenishable, bool needWithdrawable);
+
+    double getAmount() const;
+    int getTerm() const;
+    bool needsReplenishable() const;
+    bool needsWithdrawable() const;
 };
