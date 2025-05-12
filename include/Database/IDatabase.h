@@ -8,4 +8,5 @@ public:
     virtual bool connect() = 0;
     virtual void disconnect() = 0;
     virtual bool executeSQL(const std::string& sql) = 0;
+    virtual bool initializeDatabase() = 0;
 };

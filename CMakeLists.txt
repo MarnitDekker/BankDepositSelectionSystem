@@ -14,9 +14,13 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/data/deposits.db)
 else()
     file(WRITE ${CMAKE_BINARY_DIR}/data/deposits.db "")
 endif()
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Database
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Analysis
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Recommendation
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Report
 )
 
 set(SOURCES
@@ -25,6 +29,8 @@ set(SOURCES
     src/Deposit.cpp
     src/Bank.cpp
     src/Database/SQLiteDatabase.cpp
+    src/Analysis/BasicDepositAnalyzer.cpp
+    src/AppController.cpp
 )
 
 add_executable(BankDepositSelectionSystem ${SOURCES})
@@ -45,3 +51,7 @@ add_custom_command(TARGET BankDepositSelectionSystem POST_BUILD
         "${SQLITE3_ROOT}/lib/sqlite3.dll"
         $<TARGET_FILE_DIR:BankDepositSelectionSystem>
 )
+
+if (MSVC)
+    add_compile_options(/source-charset:utf-8 /execution-charset:utf-8)
+endif()

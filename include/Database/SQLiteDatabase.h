@@ -8,10 +8,12 @@ private:
     std::string dbPath;
     sqlite3* db;
     bool executeSQL(const std::string& sql);
+    void insertSampleData();
 public:
     explicit SQLiteDatabase(const std::string& dbPath);
     ~SQLiteDatabase() override;
 
     bool connect() override;
     void disconnect() override;
-};
+    bool initializeDatabase() override;
+};  
