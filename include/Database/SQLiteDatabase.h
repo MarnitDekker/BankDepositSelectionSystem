@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <sqlite3.h>
+#include <memory>
 #include "IDatabase.h"
 
 class SQLiteDatabase : public IDatabase {
