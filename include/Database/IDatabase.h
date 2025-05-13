@@ -10,4 +10,5 @@ public:
     virtual void disconnect() = 0;
     virtual bool executeSQL(const std::string& sql) = 0;
     virtual bool initializeDatabase() = 0;
+    virtual std::vector<std::shared_ptr<Deposit>> getAllDeposits() = 0;
 };

@@ -140,3 +140,34 @@ void SQLiteDatabase::insertSampleData() {
         sqlite3_finalize(stmt);
     }
 }
+
+std::vector<std::shared_ptr<Deposit>> SQLiteDatabase::getAllDeposits() {
+    std::vector<std::shared_ptr<Deposit>> deposits;
+    const char* sql = "SELECT d.id, d.name, d.interest_rate, d.term_months, "
+        "d.min_amount, d.replenishable, d.withdrawable, "
+        "d.capitalization, b.name, d.early_withdrawal_penalty, b.rating "
+        "FROM deposits d JOIN banks b ON d.bank_id = b.id";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            bool earlyPenalty = sqlite3_column_int(stmt, 9) == 1;
+            auto deposit = std::make_shared<Deposit>(
+                sqlite3_column_int(stmt, 0),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)),
+                sqlite3_column_double(stmt, 2),
+                sqlite3_column_int(stmt, 3),
+                sqlite3_column_double(stmt, 4),
+                sqlite3_column_int(stmt, 5),
+                sqlite3_column_int(stmt, 6),
+                sqlite3_column_int(stmt, 7),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8)),
+                earlyPenalty
+            );
+            deposit->setBankRating(static_cast<int>(sqlite3_column_double(stmt, 10)));
+            deposits.push_back(deposit);
+        }
+        sqlite3_finalize(stmt);
+    }
+    return deposits;
+}

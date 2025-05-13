@@ -46,9 +46,10 @@ void clientMenu(AppController& app) {
         if (choice == 1) {
             Client client = createClient();
             app.logUserQuery(client);
+            /*app.processClientRequest(client);*/
         }
         else if (choice == 2) {
-            /*app.showAllDeposits();*/
+            app.showAllDeposits();
         }
         else if (choice == 3) {
             break;

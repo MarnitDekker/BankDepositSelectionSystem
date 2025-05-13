@@ -1,9 +1,10 @@
 #include "AppController.h"
-//#include "BasicDepositAnalyzer.h"
+#include "BasicDepositAnalyzer.h"
 #include <iostream>
 #include <algorithm>
 #include <fstream>
 #include <chrono>
+#pragma execution_character_set("utf-8")
 
 AppController::AppController(std::unique_ptr<IDatabase> db,
     std::unique_ptr<IDepositAnalyzer> analyzer)
@@ -31,6 +32,23 @@ void AppController::logUserQuery(const Client& client) const {
         << "Снятие: " << (client.needsWithdrawable() ? "Да" : "Нет") << "\n";
 }
 
-//std::vector<std::shared_ptr<Deposit>> AppController::getAllDeposits() const {
-//    return database->getAllDeposits();
-//}
+std::vector<std::shared_ptr<Deposit>> AppController::getAllDeposits() const {
+    return database->getAllDeposits();
+}
+
+void AppController::showAllDeposits() const {
+    auto deposits = database->getAllDeposits();
+    if (deposits.empty()) {
+        std::cout << "В системе нет доступных вкладов.\n";
+        return;
+    }
+
+    std::cout << "\nСписок всех доступных вкладов:\n";
+    for (const auto& deposit : deposits) {
+        std::cout << deposit->getId() << ". " << deposit->getBankName()
+            << " - " << deposit->getName() << "\n";
+        std::cout << "   Ставка: " << deposit->getInterestRate() << "%";
+        std::cout << ", Срок: " << deposit->getTermMonths() << " мес.\n";
+        std::cout << "   Мин. сумма: " << deposit->getMinAmount() << " руб.\n";
+    }
+}

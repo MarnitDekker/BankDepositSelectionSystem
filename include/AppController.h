@@ -12,7 +12,7 @@ public:
     AppController(std::unique_ptr<IDatabase> db,
         std::unique_ptr<IDepositAnalyzer> analyzer);
 
-    //void showAllDeposits() const;
+    void showAllDeposits() const;
     void logUserQuery(const Client& client) const;
-/*    std::vector<std::shared_ptr<Deposit>> getAllDeposits() const*/;
+    std::vector<std::shared_ptr<Deposit>> getAllDeposits() const;
 };

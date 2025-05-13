@@ -17,4 +17,5 @@ public:
     bool connect() override;
     void disconnect() override;
     bool initializeDatabase() override;
+    std::vector<std::shared_ptr<Deposit>> getAllDeposits() override;
 };  
