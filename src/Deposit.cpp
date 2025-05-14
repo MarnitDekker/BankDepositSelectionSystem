@@ -21,3 +21,14 @@ bool Deposit::isReplenishable() const { return replenishable; }
 bool Deposit::isWithdrawable() const { return withdrawable; }
 bool Deposit::hasCapitalization() const { return capitalization; }
 std::string Deposit::getBankName() const { return bankName; }
+
+double Deposit::calculateIncome(double amount) const {
+    if (amount < minAmount) return 0.0;
+
+    if (capitalization) {
+        return amount * pow(1 + interestRate / 100 / 12, termMonths) - amount;
+    }
+    else {
+        return amount * interestRate / 100 * termMonths / 12;
+    }
+}

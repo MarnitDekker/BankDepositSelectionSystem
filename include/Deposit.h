@@ -39,4 +39,6 @@ public:
 
     void setScore(double newScore) { score = newScore; }
     void setBankRating(int rating) { bankRating = rating; }
+
+    double calculateIncome(double amount) const;
 };

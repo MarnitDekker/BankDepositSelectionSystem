@@ -1,5 +1,4 @@
 #include "AppController.h"
-#include "BasicDepositAnalyzer.h"
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -51,4 +50,16 @@ void AppController::showAllDeposits() const {
         std::cout << ", Срок: " << deposit->getTermMonths() << " мес.\n";
         std::cout << "   Мин. сумма: " << deposit->getMinAmount() << " руб.\n";
     }
+}
+
+void AppController::setRecommendationStrategy(std::unique_ptr<IRecommendationStrategy> strategy) {
+    recommendationStrategy = std::move(strategy);
+}
+
+void AppController::setReportGenerator(std::unique_ptr<IReportGenerator> reporter) {
+    reportGenerator = std::move(reporter);
+}
+
+void AppController::setConsoleReportGenerator(std::unique_ptr<IReportGenerator> reporter) {
+    consoleReportGenerator = std::move(reporter);
 }

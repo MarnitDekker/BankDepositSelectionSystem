@@ -30,7 +30,10 @@ set(SOURCES
     src/Bank.cpp
     src/Database/SQLiteDatabase.cpp
     src/Analysis/BasicDepositAnalyzer.cpp
+    src/Recommendation/FlexibleTermStrategy.cpp
+    src/Report/TextReportGenerator.cpp
     src/AppController.cpp
+    src/Factory.cpp
 )
 
 add_executable(BankDepositSelectionSystem ${SOURCES})

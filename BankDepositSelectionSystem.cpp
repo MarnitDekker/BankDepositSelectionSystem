@@ -3,6 +3,7 @@
 #include "include/Analysis/BasicDepositAnalyzer.h"
 #include "include/Client.h"
 #include "include/AppController.h"
+#include "include/Factory.h"
 #include <sqlite3.h>
 #include <windows.h>
 #pragma execution_character_set("utf-8")
@@ -70,6 +71,9 @@ int main() {
             throw std::runtime_error("Не удалось подключиться к базе данных");
         }
         AppController app(std::move(db), std::make_unique<BasicDepositAnalyzer>());
+        //app.setRecommendationStrategy(Factory::createStrategy(Factory::StrategyType::TOP_RATE));
+        //app.setReportGenerator(Factory::createReportGenerator(Factory::ReportType::HTML));
+        //app.setConsoleReportGenerator(Factory::createReportGenerator(Factory::ReportType::TEXT));
         while (true) {
             std::cout << "\n=== Добро пожаловать в систему подбора вкладов ===\n";
             std::cout << "1. Меню клиента\n";
