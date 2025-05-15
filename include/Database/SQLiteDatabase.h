@@ -18,4 +18,5 @@ public:
     void disconnect() override;
     bool initializeDatabase() override;
     std::vector<std::shared_ptr<Deposit>> getAllDeposits() override;
+    bool saveDepositScores(const std::vector<std::shared_ptr<Deposit>>& deposits) override;
 };  

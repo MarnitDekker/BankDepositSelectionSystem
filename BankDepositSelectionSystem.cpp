@@ -47,7 +47,7 @@ void clientMenu(AppController& app) {
         if (choice == 1) {
             Client client = createClient();
             app.logUserQuery(client);
-            /*app.processClientRequest(client);*/
+            app.processClientRequest(client);
         }
         else if (choice == 2) {
             app.showAllDeposits();
@@ -71,9 +71,9 @@ int main() {
             throw std::runtime_error("Не удалось подключиться к базе данных");
         }
         AppController app(std::move(db), std::make_unique<BasicDepositAnalyzer>());
-        //app.setRecommendationStrategy(Factory::createStrategy(Factory::StrategyType::TOP_RATE));
-        //app.setReportGenerator(Factory::createReportGenerator(Factory::ReportType::HTML));
-        //app.setConsoleReportGenerator(Factory::createReportGenerator(Factory::ReportType::TEXT));
+        app.setRecommendationStrategy(Factory::createStrategy(Factory::StrategyType::TOP_RATE));
+        app.setReportGenerator(Factory::createReportGenerator(Factory::ReportType::HTML));
+        app.setConsoleReportGenerator(Factory::createReportGenerator(Factory::ReportType::TEXT));
         while (true) {
             std::cout << "\n=== Добро пожаловать в систему подбора вкладов ===\n";
             std::cout << "1. Меню клиента\n";
@@ -84,18 +84,14 @@ int main() {
             std::cin >> mode;
             if (mode == 1) {
                 clientMenu(app);
-            }
-            else if (mode == 2) {
-            }
-            else if (mode == 3) {
+            } else if (mode == 2) {
+            } else if (mode == 3) {
                 break;
-            }
-            else {
+            } else {
                 std::cout << "Неверный выбор. Попробуйте снова.\n";
             }
         }
-    }
-    catch (const std::exception& e) {
+    } catch (const std::exception& e) {
         std::cerr << "Критическая ошибка: " << e.what() << std::endl;
         return 1;
     }

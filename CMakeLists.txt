@@ -31,6 +31,7 @@ set(SOURCES
     src/Database/SQLiteDatabase.cpp
     src/Analysis/BasicDepositAnalyzer.cpp
     src/Recommendation/FlexibleTermStrategy.cpp
+    src/Report/HTMLReportGenerator.cpp
     src/Report/TextReportGenerator.cpp
     src/AppController.cpp
     src/Factory.cpp

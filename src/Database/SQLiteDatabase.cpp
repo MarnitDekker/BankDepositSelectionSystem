@@ -171,3 +171,27 @@ std::vector<std::shared_ptr<Deposit>> SQLiteDatabase::getAllDeposits() {
     }
     return deposits;
 }
+
+bool SQLiteDatabase::saveDepositScores(
+    const std::vector<std::shared_ptr<Deposit>>& deposits) {
+
+    if (!executeSQL("BEGIN TRANSACTION;")) return false;
+
+    if (!executeSQL("DELETE FROM deposit_scores;")) {
+        executeSQL("ROLLBACK;");
+        return false;
+    }
+
+    for (const auto& deposit : deposits) {
+        std::string sql = "INSERT INTO deposit_scores (deposit_id, score) VALUES (" +
+            std::to_string(deposit->getId()) + ", " +
+            std::to_string(deposit->getScore()) + ");";
+
+        if (!executeSQL(sql)) {
+            executeSQL("ROLLBACK;");
+            return false;
+        }
+    }
+
+    return executeSQL("COMMIT;");
+}

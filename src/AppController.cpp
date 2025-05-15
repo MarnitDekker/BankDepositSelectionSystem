@@ -1,4 +1,4 @@
-#include "AppController.h"
+#include "../AppController.h"
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -8,6 +8,74 @@
 AppController::AppController(std::unique_ptr<IDatabase> db,
     std::unique_ptr<IDepositAnalyzer> analyzer)
     : database(std::move(db)), analyzer(std::move(analyzer)) {
+}
+
+void AppController::processClientRequest(const Client& client) {
+    auto allDeposits = database->getAllDeposits();
+    if (allDeposits.empty()) {
+        std::cout << "В системе нет доступных вкладов.\n";
+        return;
+    }
+
+    auto suitableDeposits = analyzer->analyze(allDeposits, client);
+
+    if (!database->saveDepositScores(suitableDeposits)) {
+        std::cerr << "Предупреждение: не удалось сохранить баллы в БД.\n";
+    }
+
+    if (recommendationStrategy) {
+        suitableDeposits = recommendationStrategy->recommend(suitableDeposits, client);
+    }
+
+    if (suitableDeposits.empty()) {
+        std::cout << "\nПо вашим критериям не найдено подходящих вкладов.\n";
+        return;
+    }
+
+    printTopDeposits(suitableDeposits, client, 3);
+
+    std::cout << "\nХотите получить подробный отчет? (1 - Да, 0 - Нет): ";
+    int choice;
+    std::cin >> choice;
+
+    if (choice == 1) {
+        generateFullReport(suitableDeposits, client);
+    }
+
+    std::cout << "\nСпасибо за использование нашей системы!\n";
+}
+
+void AppController::printTopDeposits(
+    const std::vector<std::shared_ptr<Deposit>>& deposits,
+    const Client& client, size_t count) const {
+
+    std::cout << "\nТоп-" << count << " рекомендованных вкладов:\n";
+    for (size_t i = 0; i < std::min(count, deposits.size()); ++i) {
+        const auto& deposit = deposits[i];
+        std::cout << i + 1 << ". " << deposit->getBankName()
+            << " - " << deposit->getName() << "\n";
+        std::cout << "   Ставка: " << deposit->getInterestRate() << "%";
+        std::cout << ", Срок: " << deposit->getTermMonths() << " мес.\n";
+        std::cout << "   Мин. сумма: " << deposit->getMinAmount() << " руб.";
+        std::cout << ", Доход: " << deposit->calculateIncome(client.getAmount()) << " руб.\n";
+        std::cout << "   Рейтинг: " << deposit->getScore() << " баллов\n\n";
+    }
+}
+
+void AppController::generateFullReport(
+    const std::vector<std::shared_ptr<Deposit>>& deposits,
+    const Client& client) {
+
+    if (reportGenerator) {
+        reportGenerator->generateReport(deposits, database->getAllDeposits(), "deposit_report.html");
+        std::cout << "Подробный отчет сохранен в файле 'deposit_report.html'\n";
+    }
+
+    if (consoleReportGenerator) {
+        std::cout << "\nДетализация вкладов:\n";
+        dynamic_cast<TextReportGenerator*>(consoleReportGenerator.get())
+            ->printToConsole(deposits);
+    }
 }
 
 void AppController::logUserQuery(const Client& client) const {
