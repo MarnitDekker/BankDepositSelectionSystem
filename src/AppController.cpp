@@ -147,9 +147,9 @@ void AppController::showAllDeposits() const {
     }
 }
 
-bool AppController::addNewDeposit(const Deposit& deposit, int bankId) {
-    return database->addDeposit(deposit, bankId);
-}
+//bool AppController::addNewDeposit(const Deposit& deposit, int bankId) {
+//    return database->addDeposit(deposit, bankId);
+//}
 
 std::vector<std::pair<int, std::string>> AppController::getAllBanks() {
     return database->getAllBanks();
@@ -265,5 +265,61 @@ void AppController::handleAddDeposit() {
         std::cout << "Ошибка при добавлении вклада.\n";
     }
 
+    std::remove(filePath.string().c_str());
+}
+
+void AppController::handleAddBank() {
+    std::string name, license;
+    double rating;
+
+    std::filesystem::path path = std::filesystem::current_path();
+    for (int i = 0; i < 5; ++i) {
+        if (std::filesystem::exists(path / "CMakeLists.txt")) {
+            break;
+        }
+        path = path.parent_path();
+    }
+
+    std::filesystem::path dirPath = path / "data";
+    std::filesystem::path filePath = dirPath / "nameBank.txt";
+
+    std::string tempName;
+    std::cout << "Введите название банка: ";
+    std::cin.ignore();
+    std::getline(std::cin, tempName);
+
+    std::string utf8Name = cp1251_to_utf8(tempName);
+
+    std::ofstream fout(filePath.string());
+    if (fout.is_open()) {
+        fout << utf8Name;
+        fout.close();
+    }
+    else {
+        std::cout << "Ошибка при создании файла " << filePath << "!" << std::endl;
+    }
+
+    {
+        std::ifstream fin(filePath.string());
+        if (fin.is_open()) {
+            std::getline(fin, name);
+            fin.close();
+        }
+        else {
+            std::cout << "Ошибка открытия файла " << filePath << "!" << std::endl;
+        }
+    }
+    std::cout << "Введите номер лицензии: ";
+    std::getline(std::cin, license);
+    std::cout << "Введите рейтинг банка (0-5): ";
+    std::cin >> rating;
+    std::cin.ignore();
+
+    if (database->addBank(name, license, rating)) {
+        std::cout << "Банк успешно добавлен!\n";
+    }
+    else {
+        std::cout << "Ошибка при добавлении банка.\n";
+    }
     std::remove(filePath.string().c_str());
 }

@@ -109,30 +109,19 @@ void clientMenu(AppController& app) {
             app.logUserQuery(client);
             app.processClientRequest(client);
             break;
-        }
-        case 2:
+        } 
+        case 2: {
             app.showAllDeposits();
             break;
-        case 3:
+        } 
+        case 3: {
             return;
+        } 
         default:
             std::cout << "Неверный выбор. Введите число от 1 до 3.\n";
         }
     }
 }
-
-//std::string cp1251_to_utf8(const std::string& cp1251str)  {
-//    int wchars_num = MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, NULL, 0);
-//    std::wstring wstr(wchars_num, 0);
-//    MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, &wstr[0], wchars_num);
-//
-//    int utf8_num = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
-//    std::string utf8str(utf8_num, 0);
-//    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &utf8str[0], utf8_num, NULL, NULL);
-//
-//    if (!utf8str.empty() && utf8str.back() == '\0') utf8str.pop_back();
-//    return utf8str;
-//}
 
 std::filesystem::path getProjectRoot() {
     std::filesystem::path path = std::filesystem::current_path();
@@ -199,8 +188,8 @@ void adminMenu(AppController& app) {
         case 3: {
             app.showUserQueryHistory();
             break;
-        }
-        case 4: {
+        } case 4: {
+            app.handleAddBank();
             break;
         }
         case 5: {

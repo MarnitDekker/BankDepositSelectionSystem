@@ -34,11 +34,12 @@ public:
     void logUserQuery(const Client& client) const;
     std::vector<std::shared_ptr<Deposit>> getAllDeposits() const;
 
-    bool addNewDeposit(const Deposit& deposit, int bankId);
+    /*bool addNewDeposit(const Deposit& deposit, int bankId);*/
     bool deleteDeposit(int depositId);
 
     std::vector<std::pair<int, std::string>> getAllBanks();
 
     void showUserQueryHistory() const;
     void handleAddDeposit();
+    void handleAddBank();
 };

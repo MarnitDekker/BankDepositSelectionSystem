@@ -250,3 +250,19 @@ std::vector<std::pair<int, std::string>> SQLiteDatabase::getAllBanks() {
     }
     return banks;
 }
+
+bool SQLiteDatabase::addBank(const std::string& name, const std::string& license, double rating) {
+    const char* sql = "INSERT INTO banks (name, license, rating) VALUES (?, ?, ?);";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 2, license.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_double(stmt, 3, rating);
+
+        int result = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+        return result == SQLITE_DONE;
+    }
+    return false;
+}
