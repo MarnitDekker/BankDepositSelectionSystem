@@ -5,47 +5,14 @@
 #include "include/AppController.h"
 #include "include/Factory.h"
 #include <sqlite3.h>
-#include <windows.h>
-#include <filesystem>
-#include <fcntl.h>
-#include <io.h>
+//#include <windows.h>
 #include <limits> 
 #include <fstream>
 #include <filesystem>
-//#include <string>
+#include <fcntl.h>
+#include <io.h>
 
 #pragma execution_character_set("utf-8")
-
-//Client createClient() {
-//    double amount;
-//    int term;
-//    bool replenishable, withdrawable;
-//
-//    std::cout << "\n=== Ввод параметров вклада ===\n";
-//
-//    do {
-//        std::cout << "Введите сумму вклада (руб): ";
-//        std::cin >> amount;
-//        if (amount <= 0) {
-//            std::cout << "Ошибка: сумма должна быть положительной!\n";
-//            continue;
-//        }
-//    } while (amount <= 0);
-//
-//    std::cout << "Введите срок вклада (мес, 0 - любой срок): ";
-//    std::cin >> term;
-//
-//    std::cout << "Требуется возможность пополнения? (1 - Да, 0 - Нет): ";
-//    std::cin >> replenishable;
-//
-//    std::cout << "Требуется возможность частичного снятия? (1 - Да, 0 - Нет): ";
-//    std::cin >> withdrawable;
-//
-//    return Client(amount, term, replenishable, withdrawable);
-//}
-
-//#include <iostream>
-//#include <limits> // для std::numeric_limits
 
 Client createClient() {
     double amount = 0;
@@ -126,25 +93,46 @@ void clientMenu(AppController& app) {
         std::cout << "1. Подобрать вклад\n";
         std::cout << "2. Просмотреть все вклады\n";
         std::cout << "3. Выйти в главное меню\n";
-        std::cout << "Выберите действие: " << std::flush;
+        std::cout << "Выберите действие: ";
+
         int choice;
-        std::cin >> choice;
-        if (choice == 1) {
+        if (!(std::cin >> choice)) {
+            std::cout << "Ошибка: введите число от 1 до 3!\n";
+            std::cin.clear();
+            std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+            continue;
+        }
+
+        switch (choice) {
+        case 1: {
             Client client = createClient();
             app.logUserQuery(client);
             app.processClientRequest(client);
-        }
-        else if (choice == 2) {
-            app.showAllDeposits();
-        }
-        else if (choice == 3) {
             break;
         }
-        else {
-            std::cout << "Неверный выбор. Попробуйте снова.\n";
+        case 2:
+            app.showAllDeposits();
+            break;
+        case 3:
+            return;
+        default:
+            std::cout << "Неверный выбор. Введите число от 1 до 3.\n";
         }
     }
 }
+
+//std::string cp1251_to_utf8(const std::string& cp1251str)  {
+//    int wchars_num = MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, NULL, 0);
+//    std::wstring wstr(wchars_num, 0);
+//    MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, &wstr[0], wchars_num);
+//
+//    int utf8_num = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+//    std::string utf8str(utf8_num, 0);
+//    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &utf8str[0], utf8_num, NULL, NULL);
+//
+//    if (!utf8str.empty() && utf8str.back() == '\0') utf8str.pop_back();
+//    return utf8str;
+//}
 
 std::filesystem::path getProjectRoot() {
     std::filesystem::path path = std::filesystem::current_path();
@@ -166,19 +154,6 @@ std::filesystem::path getDatabasePath() {
     return dbPath;
 }
 
-std::string cp1251_to_utf8(const std::string& cp1251str) {
-    int wchars_num = MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, NULL, 0);
-    std::wstring wstr(wchars_num, 0);
-    MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, &wstr[0], wchars_num);
-
-    int utf8_num = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
-    std::string utf8str(utf8_num, 0);
-    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &utf8str[0], utf8_num, NULL, NULL);
-
-    if (!utf8str.empty() && utf8str.back() == '\0') utf8str.pop_back();
-    return utf8str;
-}
-
 void adminMenu(AppController& app) {
     const std::string adminPassword = "12345";
     std::string inputPassword;
@@ -198,111 +173,46 @@ void adminMenu(AppController& app) {
         std::cout << "6. Выйти в главное меню\n";
         std::cout << "Выберите действие: " << std::flush;
         int choice;
-        std::cin >> choice;
-        if (choice == 1) {
-            std::cout << "Список банков:\n";
-            auto banks = app.getAllBanks();
-            std::vector<std::pair<int, std::string>> nonEmptyBanks;
-            int idx = 1;
-            for (const auto& bank : banks) {
-                if (!bank.second.empty()) {
-                    std::cout << idx << ". " << bank.second << std::endl;
-                    nonEmptyBanks.push_back(bank);
-                    ++idx;
-                }
-            }
-            if (nonEmptyBanks.empty()) {
-                std::cout << "Нет доступных банков!\n";
-                continue;
-            }
-            int bankChoice = 0;
-            std::cout << "Выберите номер банка из списка: ";
-            std::cin >> bankChoice;
-            if (bankChoice < 1 || bankChoice >(int)nonEmptyBanks.size()) {
-                std::cout << "Некорректный выбор банка!\n";
-                continue;
-            }
-            int bankId = nonEmptyBanks[bankChoice - 1].first;
-            std::string bankName = nonEmptyBanks[bankChoice - 1].second;
-            std::cout << "Введите параметры нового вклада:\n";
-            int id = 0;
-            double rate, minAmount;
-            int term;
-            bool replenishable, withdrawable, capitalization, earlyWithdrawal;
-
-            std::filesystem::path dirPath = getProjectRoot() / "data";
-            std::filesystem::path filePath = dirPath / "nameDeposit.txt";
-
-            std::string tempName;
-            std::cout << "Введите название вклада: ";
-            std::cin.ignore();
-            std::getline(std::cin, tempName);
-
-            std::string utf8Name = cp1251_to_utf8(tempName);
-
-            std::ofstream fout(filePath.string());
-            if (fout.is_open()) {
-                fout << utf8Name;
-                fout.close();
-            }
-            else {
-                std::cout << "Ошибка при создании файла " << filePath << "!" << std::endl;
-            }
-
-            std::string name;
-            {
-                std::ifstream fin(filePath.string());
-                if (fin.is_open()) {
-                    std::getline(fin, name);
-                    fin.close();
-                    std::cout << "[DEBUG] Прочитано из файла: " << name << std::endl;
-                }
-                else {
-                    std::cout << "Ошибка открытия файла " << filePath << "!" << std::endl;
-                }
-            }
-            std::cout << "[DEBUG] name: " << name << std::endl;
-            for (unsigned char c : name) std::cout << std::hex << (int)c << ' ';
-            std::cout << std::endl;
-
-            std::cout << "Ставка (%): "; std::cin >> rate;
-            std::cout << "Срок (мес): "; std::cin >> term;
-            std::cout << "Мин. сумма: "; std::cin >> minAmount;
-            std::cout << "Пополнение (1 - Да, 0 - Нет): "; std::cin >> replenishable;
-            std::cout << "Снятие (1 - Да, 0 - Нет): "; std::cin >> withdrawable;
-            std::cout << "Капитализация (1 - Да, 0 - Нет): "; std::cin >> capitalization;
-            std::cout << "Штраф за досрочное снятие (1 - Да, 0 - Нет): "; std::cin >> earlyWithdrawal;
-            Deposit dep(id, name, rate, term, minAmount, replenishable, withdrawable, capitalization, bankName, earlyWithdrawal);
-            if (app.addNewDeposit(dep, bankId)) {
-                std::cout << "Вклад успешно добавлен!\n";
-            }
-            else {
-                std::cout << "Ошибка при добавлении вклада.\n";
-            }
-
-            std::remove(filePath.string().c_str());
+        if (!(std::cin >> choice)) {
+            std::cout << "Ошибка: введите число от 1 до 6!\n";
+            std::cin.clear();
+            std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+            continue;
         }
-        else if (choice == 2) {
+        switch (choice) {
+        case 1: {
+            app.handleAddDeposit();
+            break;
+        }
+        case 2: {
             std::cout << "Введите ID вклада для удаления: ";
-            int delId; std::cin >> delId;
+            int delId;
+            std::cin >> delId;
             if (app.deleteDeposit(delId)) {
                 std::cout << "Вклад успешно удалён.\n";
             }
             else {
                 std::cout << "Ошибка при удалении вклада.\n";
             }
-        }
-        else if (choice == 3) {
-        }
-        else if (choice == 4) {
-        }
-        else if (choice == 5) {
-        }
-        else if (choice == 6) {
             break;
         }
-        else {
+        case 3: {
+            app.showUserQueryHistory();
+            break;
+        }
+        case 4: {
+            break;
+        }
+        case 5: {
+            break;
+        }
+        case 6: {
+            return;
+        }
+        default: {
             std::cout << "Неверный выбор. Попробуйте снова.\n";
+            break;
+        }
         }
     }
 }
@@ -326,12 +236,18 @@ int main() {
             std::cout << "3. Выйти\n";
             std::cout << "Выберите режим: " << std::flush;
             int mode;
-            std::cin >> mode;
+            if (!(std::cin >> mode)) {
+                std::cout << "Ошибка: введите число от 1 до 3!\n";
+                std::cin.clear();
+                std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+                continue;
+            }
             if (mode == 1) {
                 clientMenu(app);
             } else if (mode == 2) {
                 adminMenu(app);
             } else if (mode == 3) {
+                std::filesystem::remove("user_queries.log");
                 break;
             } else {
                 std::cout << "Неверный выбор. Попробуйте снова.\n";

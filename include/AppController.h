@@ -6,6 +6,13 @@
 #include "IReportGenerator.h"
 #include "TextReportGenerator.h"
 #include "Client.h"
+#include <iostream>
+#include <fstream>
+#include <chrono>
+#include <windows.h>
+#include <limits> 
+#include <filesystem>
+#include <algorithm>
 
 class AppController {
 private:
@@ -14,6 +21,8 @@ private:
 
     void printTopDeposits(const std::vector<std::shared_ptr<Deposit>>& deposits,
         const Client& client, size_t count) const;
+
+    std::string cp1251_to_utf8(const std::string& cp1251str) const;
 
 public:
     AppController(std::unique_ptr<IDatabase> db,
@@ -29,4 +38,7 @@ public:
     bool deleteDeposit(int depositId);
 
     std::vector<std::pair<int, std::string>> getAllBanks();
+
+    void showUserQueryHistory() const;
+    void handleAddDeposit();
 };
