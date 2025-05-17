@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <windows.h>
 #include <algorithm>
+#pragma execution_character_set("utf-8")
 
 static double calculateGeneralScore(const std::shared_ptr<Deposit>& deposit) {
     double score = 0.0;

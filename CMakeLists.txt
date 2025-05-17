@@ -7,14 +7,6 @@ endif()
 
 project ("BankDepositSelectionSystem")
 
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data)
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/data/deposits.db)
-    file(COPY ${CMAKE_SOURCE_DIR}/data/deposits.db DESTINATION ${CMAKE_BINARY_DIR}/data)
-else()
-    file(WRITE ${CMAKE_BINARY_DIR}/data/deposits.db "")
-endif()
-
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Database
@@ -35,9 +27,10 @@ set(SOURCES
     src/Report/TextReportGenerator.cpp
     src/AppController.cpp
     src/Factory.cpp
+    src/Recommendation/TopRateStategy.cpp
 )
 
-add_executable(BankDepositSelectionSystem ${SOURCES})
+add_executable(BankDepositSelectionSystem ${SOURCES} "src/Recommendation/TopRateStategy.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET BankDepositSelectionSystem PROPERTY CXX_STANDARD 20)
@@ -56,6 +49,8 @@ add_custom_command(TARGET BankDepositSelectionSystem POST_BUILD
         $<TARGET_FILE_DIR:BankDepositSelectionSystem>
 )
 
-if (MSVC)
-    add_compile_options(/source-charset:utf-8 /execution-charset:utf-8)
+if(MSVC)
+    add_compile_options(/utf-8)
+else()
+    add_compile_options(-finput-charset=UTF-8 -fexec-charset=UTF-8)
 endif()

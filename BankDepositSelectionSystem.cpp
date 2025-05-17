@@ -6,6 +6,10 @@
 #include "include/Factory.h"
 #include <sqlite3.h>
 #include <windows.h>
+#include <filesystem>
+#include <fcntl.h>
+#include <io.h>
+
 #pragma execution_character_set("utf-8")
 
 Client createClient() {
@@ -61,19 +65,42 @@ void clientMenu(AppController& app) {
     }
 }
 
+std::filesystem::path getProjectRoot() {
+    std::filesystem::path path = std::filesystem::current_path();
+    for (int i = 0; i < 5; ++i) {
+        if (std::filesystem::exists(path / "CMakeLists.txt")) {
+            return path;
+        }
+        path = path.parent_path();
+    }
+
+    return std::filesystem::current_path();
+}
+
+std::filesystem::path getDatabasePath() {
+    std::filesystem::path dbPath = getProjectRoot() / "data" / "deposits.db";
+
+    std::filesystem::create_directories(dbPath.parent_path());
+
+    return dbPath;
+}
+
+
+
 int main() {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 
     try {
-        auto db = std::make_unique<SQLiteDatabase>("data/deposits.db");
+        auto db = std::make_unique<SQLiteDatabase>(getDatabasePath().string());
         if (!db->connect()) {
             throw std::runtime_error("Не удалось подключиться к базе данных");
         }
         AppController app(std::move(db), std::make_unique<BasicDepositAnalyzer>());
-        app.setRecommendationStrategy(Factory::createStrategy(Factory::StrategyType::TOP_RATE));
-        app.setReportGenerator(Factory::createReportGenerator(Factory::ReportType::HTML));
-        app.setConsoleReportGenerator(Factory::createReportGenerator(Factory::ReportType::TEXT));
+       /* app.setRecommendationStrategy(Factory::createStrategy(Factory::StrategyType::TOP_RATE));*/
+        /*app.setRecommendationStrategy(Factory::createStrategy(Factory::StrategyType::FLEXIBLE_TERM));*/
+        /*app.setReportGenerator(Factory::createReportGenerator(Factory::ReportType::HTML));*/
+        /*app.setConsoleReportGenerator(Factory::createReportGenerator(Factory::ReportType::TEXT));*/
         while (true) {
             std::cout << "\n=== Добро пожаловать в систему подбора вкладов ===\n";
             std::cout << "1. Меню клиента\n";

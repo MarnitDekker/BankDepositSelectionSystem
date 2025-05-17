@@ -6,8 +6,8 @@
 
 std::unique_ptr<IRecommendationStrategy> Factory::createStrategy(StrategyType type) {
     switch (type) {
-    //case StrategyType::TOP_RATE:
-    //    return std::make_unique<TopRateStrategy>();
+    case StrategyType::TOP_RATE:
+        return std::make_unique<TopRateStrategy>();
     case StrategyType::FLEXIBLE_TERM:
         return std::make_unique<FlexibleTermStrategy>();
     default:

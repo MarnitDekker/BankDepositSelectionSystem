@@ -1,5 +1,7 @@
 #include "Deposit.h"
 #include <cmath>
+#include <iostream>
+#pragma execution_character_set("utf-8")
 
 Deposit::Deposit(int id, const std::string& name, double rate, int term,
     double minAmount, bool replenishable, bool withdrawable,
@@ -10,6 +12,7 @@ Deposit::Deposit(int id, const std::string& name, double rate, int term,
     withdrawable(withdrawable), capitalization(capitalization),
     bankName(bankName), hasEarlyWithdrawalPenalty(earlyWithdrawal),
     score(0.0), bankRating(0) {
+    std::cout << "[DEBUG] Конструктор: получено имя: " << name << std::endl;
 }
 
 int Deposit::getId() const { return id; }

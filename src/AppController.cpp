@@ -1,4 +1,5 @@
 #include "../AppController.h"
+#include "Factory.h"
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -23,9 +24,13 @@ void AppController::processClientRequest(const Client& client) {
         std::cerr << "Предупреждение: не удалось сохранить баллы в БД.\n";
     }
 
-    if (recommendationStrategy) {
+    /*if (recommendationStrategy) {
         suitableDeposits = recommendationStrategy->recommend(suitableDeposits, client);
-    }
+    }*/
+
+    auto recommendationGen = Factory::createStrategy(
+        (client.getTerm() == 0) ? Factory::StrategyType::TOP_RATE : Factory::StrategyType::FLEXIBLE_TERM
+    );
 
     if (suitableDeposits.empty()) {
         std::cout << "\nПо вашим критериям не найдено подходящих вкладов.\n";
@@ -39,7 +44,29 @@ void AppController::processClientRequest(const Client& client) {
     std::cin >> choice;
 
     if (choice == 1) {
-        generateFullReport(suitableDeposits, client);
+        /*generateFullReport(suitableDeposits, client);*/
+        std::cout << "\nВыберите формат отчета:\n";
+        std::cout << "1 - Текстовый отчет в консоли\n";
+        std::cout << "0 - Подробный HTML отчет в браузере\n";
+        std::cout << "Ваш выбор: ";
+        int reportChoice;
+        std::cin >> reportChoice;
+
+        auto reportGen = Factory::createReportGenerator(
+            reportChoice == 1 ? Factory::ReportType::TEXT : Factory::ReportType::HTML
+        );
+
+        if (reportGen) {
+            if (reportChoice == 1) {
+                if (auto textGen = dynamic_cast<TextReportGenerator*>(reportGen.get())) {
+                    std::cout << "\nДетализация вкладов:\n";
+                    textGen->printToConsole(suitableDeposits);
+                }
+            } else {
+                reportGen->generateReport(suitableDeposits, database->getAllDeposits(), "deposit_report.html");
+                /*std::cout << "Подробный отчет сохранен в файле 'deposit_report.html'\n";*/
+            }
+        }
     }
 
     std::cout << "\nСпасибо за использование нашей системы!\n";
@@ -62,21 +89,21 @@ void AppController::printTopDeposits(
     }
 }
 
-void AppController::generateFullReport(
-    const std::vector<std::shared_ptr<Deposit>>& deposits,
-    const Client& client) {
-
-    if (reportGenerator) {
-        reportGenerator->generateReport(deposits, database->getAllDeposits(), "deposit_report.html");
-        std::cout << "Подробный отчет сохранен в файле 'deposit_report.html'\n";
-    }
-
-    if (consoleReportGenerator) {
-        std::cout << "\nДетализация вкладов:\n";
-        dynamic_cast<TextReportGenerator*>(consoleReportGenerator.get())
-            ->printToConsole(deposits);
-    }
-}
+//void AppController::generateFullReport(
+//    const std::vector<std::shared_ptr<Deposit>>& deposits,
+//    const Client& client) {
+//
+//    if (reportGenerator) {
+//        reportGenerator->generateReport(deposits, database->getAllDeposits(), "deposit_report.html");
+//        std::cout << "Подробный отчет сохранен в файле 'deposit_report.html'\n";
+//    }
+//
+//    if (consoleReportGenerator) {
+//        std::cout << "\nДетализация вкладов:\n";
+//        dynamic_cast<TextReportGenerator*>(consoleReportGenerator.get())
+//            ->printToConsole(deposits);
+//    }
+//}
 
 void AppController::logUserQuery(const Client& client) const {
     std::ofstream out("user_queries.log", std::ios::app);
@@ -120,14 +147,22 @@ void AppController::showAllDeposits() const {
     }
 }
 
-void AppController::setRecommendationStrategy(std::unique_ptr<IRecommendationStrategy> strategy) {
-    recommendationStrategy = std::move(strategy);
+//void AppController::setRecommendationStrategy(std::unique_ptr<IRecommendationStrategy> strategy) {
+//    recommendationStrategy = std::move(strategy);
+//}
+//
+//void AppController::setReportGenerator(std::unique_ptr<IReportGenerator> reporter) {
+//    reportGenerator = std::move(reporter);
+//}
+//
+//void AppController::setConsoleReportGenerator(std::unique_ptr<IReportGenerator> reporter) {
+//    consoleReportGenerator = std::move(reporter);
+//}
+
+bool AppController::addNewDeposit(const Deposit& deposit, int bankId) {
+    return database->addDeposit(deposit, bankId);
 }
 
-void AppController::setReportGenerator(std::unique_ptr<IReportGenerator> reporter) {
-    reportGenerator = std::move(reporter);
-}
-
-void AppController::setConsoleReportGenerator(std::unique_ptr<IReportGenerator> reporter) {
-    consoleReportGenerator = std::move(reporter);
+std::vector<std::pair<int, std::string>> AppController::getAllBanks() {
+    return database->getAllBanks();
 }

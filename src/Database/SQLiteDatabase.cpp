@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <sqlite3.h>
 #include <filesystem>
+#pragma execution_character_set("utf-8")
 
 SQLiteDatabase::SQLiteDatabase(const std::string& dbPath)
     : dbPath(dbPath), db(nullptr) {
@@ -29,7 +30,7 @@ bool SQLiteDatabase::connect() {
         sqlite3_finalize(stmt);
     }
 
-    executeSQL("PRAGMA encoding = 'UTF-8';");
+    /*executeSQL("PRAGMA encoding = 'UTF-8';");*/
 
     if (isNewDB) {
         return initializeDatabase();
@@ -194,4 +195,43 @@ bool SQLiteDatabase::saveDepositScores(
     }
 
     return executeSQL("COMMIT;");
+}
+
+static std::string escapeQuotes(const std::string& input) {
+    std::string result;
+    result.reserve(input.length() * 2);
+    for (char c : input) {
+        if (c == '\'') {
+            result += "''";
+        }
+        else {
+            result += c;
+        }
+    }
+    return result;
+}
+
+bool SQLiteDatabase::addDeposit(const Deposit& deposit, int bankId) {
+    std::string depositName = escapeQuotes(deposit.getName());
+
+    const char* sql = "INSERT INTO deposits (bank_id, name, interest_rate, min_amount, term_months, replenishable, withdrawable, capitalization, early_withdrawal_penalty) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, bankId);
+        sqlite3_bind_text(stmt, 2, depositName.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_double(stmt, 3, deposit.getInterestRate());
+        sqlite3_bind_double(stmt, 4, deposit.getMinAmount());
+        sqlite3_bind_int(stmt, 5, deposit.getTermMonths());
+        sqlite3_bind_int(stmt, 6, deposit.isReplenishable() ? 1 : 0);
+        sqlite3_bind_int(stmt, 7, deposit.isWithdrawable() ? 1 : 0);
+        sqlite3_bind_int(stmt, 8, deposit.hasCapitalization() ? 1 : 0);
+        sqlite3_bind_int(stmt, 9, deposit.isEarlyWithdrawalPenalized() ? 1 : 0);
+
+        int result = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        return result == SQLITE_DONE;
+    }
+    return false;
 }
