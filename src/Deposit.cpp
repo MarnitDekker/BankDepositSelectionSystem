@@ -12,7 +12,6 @@ Deposit::Deposit(int id, const std::string& name, double rate, int term,
     withdrawable(withdrawable), capitalization(capitalization),
     bankName(bankName), hasEarlyWithdrawalPenalty(earlyWithdrawal),
     score(0.0), bankRating(0) {
-    std::cout << "[DEBUG] Конструктор: получено имя: " << name << std::endl;
 }
 
 int Deposit::getId() const { return id; }

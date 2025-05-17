@@ -30,8 +30,6 @@ bool SQLiteDatabase::connect() {
         sqlite3_finalize(stmt);
     }
 
-    /*executeSQL("PRAGMA encoding = 'UTF-8';");*/
-
     if (isNewDB) {
         return initializeDatabase();
     }
@@ -234,4 +232,21 @@ bool SQLiteDatabase::addDeposit(const Deposit& deposit, int bankId) {
         return result == SQLITE_DONE;
     }
     return false;
+}
+
+std::vector<std::pair<int, std::string>> SQLiteDatabase::getAllBanks() {
+    std::vector<std::pair<int, std::string>> banks;
+    const char* sql = "SELECT id, name FROM banks ORDER BY name;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            banks.emplace_back(
+                sqlite3_column_int(stmt, 0),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1))
+            );
+        }
+        sqlite3_finalize(stmt);
+    }
+    return banks;
 }
