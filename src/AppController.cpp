@@ -147,19 +147,6 @@ void AppController::showAllDeposits() const {
     }
 }
 
-//bool AppController::addNewDeposit(const Deposit& deposit, int bankId) {
-//    return database->addDeposit(deposit, bankId);
-//}
-
-std::vector<std::pair<int, std::string>> AppController::getAllBanks() {
-    return database->getAllBanks();
-}
-
-bool AppController::deleteDeposit(int depositId) {
-    std::string sql = "DELETE FROM deposits WHERE id = " + std::to_string(depositId) + ";";
-    return database->executeSQL(sql);
-}
-
 std::string AppController::cp1251_to_utf8(const std::string& cp1251str) const {
     int wchars_num = MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, NULL, 0);
     std::wstring wstr(wchars_num, 0);
@@ -288,14 +275,17 @@ void AppController::handleAddBank() {
     std::cin.ignore();
     std::getline(std::cin, tempName);
 
+    if (tempName.empty()) {
+        throw std::invalid_argument("Название банка не может быть пустым");
+    }
+
     std::string utf8Name = cp1251_to_utf8(tempName);
 
     std::ofstream fout(filePath.string());
     if (fout.is_open()) {
         fout << utf8Name;
         fout.close();
-    }
-    else {
+    } else {
         std::cout << "Ошибка при создании файла " << filePath << "!" << std::endl;
     }
 
@@ -309,10 +299,36 @@ void AppController::handleAddBank() {
             std::cout << "Ошибка открытия файла " << filePath << "!" << std::endl;
         }
     }
-    std::cout << "Введите номер лицензии: ";
-    std::getline(std::cin, license);
-    std::cout << "Введите рейтинг банка (0-5): ";
-    std::cin >> rating;
+
+    while (true) {
+        std::cout << "Введите номер лицензии: ";
+        std::getline(std::cin, license);
+
+        if (license.empty()) {
+            std::cout << "Ошибка: номер лицензии не может быть пустым!\n";
+            continue;
+        }
+
+        break;
+    }
+
+    while (true) {
+        std::cout << "Введите рейтинг банка (0.0-5.0): ";
+
+        if (!(std::cin >> rating)) {
+            std::cout << "Ошибка: введите числовое значение!\n";
+            std::cin.clear();
+            std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+            continue;
+        }
+
+        if (rating < 0 || rating > 5) {
+            std::cout << "Ошибка: рейтинг должен быть от 0.0 до 5.0!\n";
+            continue;
+        }
+
+        break;
+    }
     std::cin.ignore();
 
     if (database->addBank(name, license, rating)) {
@@ -322,4 +338,80 @@ void AppController::handleAddBank() {
         std::cout << "Ошибка при добавлении банка.\n";
     }
     std::remove(filePath.string().c_str());
+}
+
+void AppController::handleDeleteDeposit() {
+    int delId = 0;
+
+    while (true) {
+        std::cout << "Введите ID вклада для удаления: ";
+
+        if (!(std::cin >> delId)) {
+            std::cout << "Ошибка: введите целое число!\n";
+            std::cin.clear();
+            std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+            continue;
+        }
+
+        if (delId <= 0) {
+            std::cout << "Ошибка: ID должен быть положительным числом!\n";
+            continue;
+        }
+
+        break;
+    }
+
+    if (database->deleteDeposit(delId)) {
+        std::cout << "Вклад успешно удалён.\n";
+    }
+    else {
+        std::cout << "Ошибка при удалении вклада (возможно, указан несуществующий ID).\n";
+    }
+}
+
+void AppController::handleDeleteBank() {
+    auto banks = database->getAllBanks();
+    std::vector<std::pair<int, std::string>> nonEmptyBanks;
+
+    int idx = 1;
+    for (const auto& bank : banks) {
+        if (!bank.second.empty()) {
+            std::cout << idx << ". " << bank.second << std::endl;
+            nonEmptyBanks.push_back(bank);
+            ++idx;
+        }
+    }
+
+    if (nonEmptyBanks.empty()) {
+        std::cout << "Нет доступных банков!\n";
+        return;
+    }
+
+    int bankChoice = 0;
+    while (true) {
+        std::cout << "Выберите номер банка для удаления (1-" << nonEmptyBanks.size() << "): ";
+
+        if (!(std::cin >> bankChoice)) {
+            std::cout << "Ошибка: введите число!\n";
+            std::cin.clear();
+            std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+            continue;
+        }
+
+        if (bankChoice < 1 || bankChoice > static_cast<int>(nonEmptyBanks.size())) {
+            std::cout << "Ошибка: введите число от 1 до " << nonEmptyBanks.size() << "!\n";
+            continue;
+        }
+
+        break;
+    }
+
+    int bankId = nonEmptyBanks[bankChoice - 1].first;
+
+    if (database->deleteBank(bankId)) {
+        std::cout << "Банк успешно удалён!\n";
+    }
+    else {
+        std::cout << "Ошибка при удалении банка (возможно, есть связанные вклады).\n";
+    }
 }

@@ -22,4 +22,6 @@ public:
     bool addDeposit(const Deposit& deposit, int bankId) override;
     std::vector<std::pair<int, std::string>> getAllBanks();
     bool addBank(const std::string& name, const std::string& license, double rating);
+    bool deleteBank(int bankId) override;
+    bool deleteDeposit(int depositId) override;
 };  

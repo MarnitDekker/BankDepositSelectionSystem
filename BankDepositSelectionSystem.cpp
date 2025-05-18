@@ -4,8 +4,6 @@
 #include "include/Client.h"
 #include "include/AppController.h"
 #include "include/Factory.h"
-#include <sqlite3.h>
-//#include <windows.h>
 #include <limits> 
 #include <fstream>
 #include <filesystem>
@@ -174,15 +172,7 @@ void adminMenu(AppController& app) {
             break;
         }
         case 2: {
-            std::cout << "Введите ID вклада для удаления: ";
-            int delId;
-            std::cin >> delId;
-            if (app.deleteDeposit(delId)) {
-                std::cout << "Вклад успешно удалён.\n";
-            }
-            else {
-                std::cout << "Ошибка при удалении вклада.\n";
-            }
+            app.handleDeleteDeposit();
             break;
         }
         case 3: {
@@ -193,6 +183,7 @@ void adminMenu(AppController& app) {
             break;
         }
         case 5: {
+            app.handleDeleteBank();
             break;
         }
         case 6: {

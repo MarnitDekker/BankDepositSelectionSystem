@@ -15,4 +15,6 @@ public:
     virtual bool addDeposit(const Deposit& deposit, int bankId) = 0;
     virtual std::vector<std::pair<int, std::string>> getAllBanks() = 0;
     virtual bool addBank(const std::string& name, const std::string& license, double rating) = 0;
+    virtual bool deleteBank(int bankId) = 0;
+    virtual bool deleteDeposit(int depositId) = 0;
 };

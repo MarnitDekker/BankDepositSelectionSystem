@@ -266,3 +266,13 @@ bool SQLiteDatabase::addBank(const std::string& name, const std::string& license
     }
     return false;
 }
+
+bool SQLiteDatabase::deleteBank(int bankId) {
+    std::string sql = "DELETE FROM banks WHERE id = " + std::to_string(bankId) + ";";
+    return executeSQL(sql);
+}
+
+bool SQLiteDatabase::deleteDeposit(int depositId) {
+    std::string sql = "DELETE FROM deposits WHERE id = " + std::to_string(depositId) + ";";
+    return executeSQL(sql);
+}
