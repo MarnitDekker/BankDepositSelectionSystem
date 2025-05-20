@@ -1,7 +1,7 @@
 #pragma once
+#include "Deposit.h"
 #include <vector>
 #include <memory>
-#include "Deposit.h"
 
 class IDatabase {
 public:

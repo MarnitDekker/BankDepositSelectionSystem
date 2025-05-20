@@ -1,8 +1,4 @@
 #include "SQLiteDatabase.h"
-//#include <iostream>
-//#include <stdexcept>
-//#include <sqlite3.h>
-//#include <filesystem>
 #pragma execution_character_set("utf-8")
 
 SQLiteDatabase::SQLiteDatabase(const std::string& dbPath)
@@ -202,8 +198,7 @@ static std::string escapeQuotes(const std::string& input) {
     for (char c : input) {
         if (c == '\'') {
             result += "''";
-        }
-        else {
+        } else {
             result += c;
         }
     }

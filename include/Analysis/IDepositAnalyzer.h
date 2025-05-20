@@ -1,8 +1,8 @@
 #pragma once
-#include <vector>
-#include <memory>
 #include "Deposit.h"
 #include "Client.h"
+#include <vector>
+#include <memory>
 
 class IDepositAnalyzer {
 public:

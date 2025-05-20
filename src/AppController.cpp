@@ -1,6 +1,5 @@
 #include "AppController.h"
 #include "Factory.h"
-
 #pragma execution_character_set("utf-8")
 
 AppController::AppController(std::unique_ptr<IDatabase> db,
@@ -70,7 +69,7 @@ void AppController::printTopDeposits(
     const std::vector<std::shared_ptr<Deposit>>& deposits,
     const Client& client, size_t count) const {
 
-    std::cout << "\nТоп-" << count << " рекомендованных вкладов:\n";
+    std::cout << "\nТоп рекомендованных вкладов:\n";
     for (size_t i = 0; i < (std::min)(count, deposits.size()); ++i) {
         const auto& deposit = deposits[i];
         std::cout << i + 1 << ". " << deposit->getBankName()
@@ -213,8 +212,7 @@ void AppController::handleAddDeposit() {
     if (fout.is_open()) {
         fout << utf8Name;
         fout.close();
-    }
-    else {
+    } else {
         std::cout << "Ошибка при создании файла " << filePath << "!" << std::endl;
     }
 
@@ -224,8 +222,7 @@ void AppController::handleAddDeposit() {
         if (fin.is_open()) {
             std::getline(fin, name);
             fin.close();
-        }
-        else {
+        } else {
             std::cout << "Ошибка открытия файла " << filePath << "!" << std::endl;
         }
     }
@@ -241,8 +238,7 @@ void AppController::handleAddDeposit() {
     Deposit dep(id, name, rate, term, minAmount, replenishable, withdrawable, capitalization, bankName, earlyWithdrawal);
     if (database->addDeposit(dep, bankId)) {
         std::cout << "Вклад успешно добавлен!\n";
-    }
-    else {
+    } else {
         std::cout << "Ошибка при добавлении вклада.\n";
     }
 
@@ -288,8 +284,7 @@ void AppController::handleAddBank() {
         if (fin.is_open()) {
             std::getline(fin, name);
             fin.close();
-        }
-        else {
+        } else {
             std::cout << "Ошибка открытия файла " << filePath << "!" << std::endl;
         }
     }
@@ -327,8 +322,7 @@ void AppController::handleAddBank() {
 
     if (database->addBank(name, license, rating)) {
         std::cout << "Банк успешно добавлен!\n";
-    }
-    else {
+    } else {
         std::cout << "Ошибка при добавлении банка.\n";
     }
     std::remove(filePath.string().c_str());
@@ -357,8 +351,7 @@ void AppController::handleDeleteDeposit() {
 
     if (database->deleteDeposit(delId)) {
         std::cout << "Вклад успешно удалён.\n";
-    }
-    else {
+    } else {
         std::cout << "Ошибка при удалении вклада (возможно, указан несуществующий ID).\n";
     }
 }
@@ -404,8 +397,7 @@ void AppController::handleDeleteBank() {
 
     if (database->deleteBank(bankId)) {
         std::cout << "Банк успешно удалён!\n";
-    }
-    else {
+    } else {
         std::cout << "Ошибка при удалении банка (возможно, есть связанные вклады).\n";
     }
 }

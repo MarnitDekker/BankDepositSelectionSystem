@@ -1,6 +1,4 @@
 #include "Deposit.h"
-//#include <cmath>
-//#include <iostream>
 #pragma execution_character_set("utf-8")
 
 Deposit::Deposit(int id, const std::string& name, double rate, int term,
@@ -24,13 +22,19 @@ bool Deposit::isWithdrawable() const { return withdrawable; }
 bool Deposit::hasCapitalization() const { return capitalization; }
 std::string Deposit::getBankName() const { return bankName; }
 
+double Deposit::getScore() const { return score; }
+bool Deposit::isEarlyWithdrawalPenalized() const { return hasEarlyWithdrawalPenalty; }
+int Deposit::getBankRating() const { return bankRating; }
+
+void Deposit::setScore(double newScore) { score = newScore; }
+void Deposit::setBankRating(int rating) { bankRating = rating; }
+
 double Deposit::calculateIncome(double amount) const {
     if (amount < minAmount) return 0.0;
 
     if (capitalization) {
         return amount * pow(1 + interestRate / 100 / 12, termMonths) - amount;
-    }
-    else {
+    } else {
         return amount * interestRate / 100 * termMonths / 12;
     }
 }

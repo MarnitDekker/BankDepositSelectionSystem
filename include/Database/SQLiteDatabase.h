@@ -1,10 +1,9 @@
 #pragma once
+#include "IDatabase.h"
 #include <string>
 #include <sqlite3.h>
 #include <iostream>
 #include <stdexcept>
-//#include <memory>
-#include "IDatabase.h"
 
 class SQLiteDatabase : public IDatabase {
 private:

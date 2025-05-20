@@ -1,8 +1,7 @@
 #include "HTMLReportGenerator.h"
-#include <fstream>
-#include <iomanip>
-#include <windows.h>
-//#include <algorithm>
+//#include <fstream>
+//#include <iomanip>
+//#include <windows.h>
 #pragma execution_character_set("utf-8")
 
 static double calculateGeneralScore(const std::shared_ptr<Deposit>& deposit) {
@@ -56,7 +55,6 @@ void HTMLReportGenerator::generateReport(
             << "<td>" << deposit->getInterestRate() << "%</td>"
             << "<td>" << deposit->getTermMonths() << " мес.</td>"
             << "<td>" << std::to_string(static_cast<long long>(deposit->getMinAmount())) << " руб.</td>"
-            /*<< "<td>" << deposit->getMinAmount() << " руб.</td>"*/
             << "<td>" << (deposit->isReplenishable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->isWithdrawable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->hasCapitalization() ? "Да" : "Нет") << "</td>"
@@ -93,7 +91,6 @@ void HTMLReportGenerator::generateReport(
             << "<td>" << deposit->getInterestRate() << "%</td>"
             << "<td>" << deposit->getTermMonths() << " мес.</td>"
             << "<td>" << std::to_string(static_cast<long long>(deposit->getMinAmount())) << " руб.</td>"
-            //<< "<td>" << deposit->getMinAmount() << " руб.</td>"
             << "<td>" << (deposit->isReplenishable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->isWithdrawable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->hasCapitalization() ? "Да" : "Нет") << "</td>"

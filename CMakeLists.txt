@@ -28,9 +28,10 @@ set(SOURCES
     src/AppController.cpp
     src/Factory.cpp
     src/Recommendation/TopRateStategy.cpp
+    src/UserInterface.cpp
 )
 
-add_executable(BankDepositSelectionSystem ${SOURCES} "src/Recommendation/TopRateStategy.cpp")
+add_executable(BankDepositSelectionSystem ${SOURCES})
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET BankDepositSelectionSystem PROPERTY CXX_STANDARD 20)
@@ -48,9 +49,3 @@ add_custom_command(TARGET BankDepositSelectionSystem POST_BUILD
         "${SQLITE3_ROOT}/lib/sqlite3.dll"
         $<TARGET_FILE_DIR:BankDepositSelectionSystem>
 )
-
-if(MSVC)
-    add_compile_options(/utf-8)
-else()
-    add_compile_options(-finput-charset=UTF-8 -fexec-charset=UTF-8)
-endif()

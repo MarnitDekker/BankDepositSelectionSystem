@@ -1,6 +1,4 @@
 #include "FlexibleTermStrategy.h"
-//#include <algorithm>
-//#include <cmath>
 
 std::vector<std::shared_ptr<Deposit>> FlexibleTermStrategy::recommend(
     const std::vector<std::shared_ptr<Deposit>>& deposits,

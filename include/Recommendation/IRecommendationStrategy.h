@@ -1,9 +1,9 @@
 #pragma once
+#include "Client.h"
+#include "Deposit.h"
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include "Client.h"
-#include "Deposit.h"
 
 class IRecommendationStrategy {
 public:

@@ -1,8 +1,8 @@
 #pragma once
+#include "Deposit.h"
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include "Deposit.h"
 
 class IReportGenerator {
 public:

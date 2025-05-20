@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-//#include <memory>
 
 class Deposit {
 private:
@@ -33,12 +32,12 @@ public:
     bool hasCapitalization() const;
     std::string getBankName() const;
 
-    double getScore() const { return score; }
-    bool isEarlyWithdrawalPenalized() const { return hasEarlyWithdrawalPenalty; }
-    int getBankRating() const { return bankRating; }
+    double getScore() const;
+    bool isEarlyWithdrawalPenalized() const;
+    int getBankRating() const;
 
-    void setScore(double newScore) { score = newScore; }
-    void setBankRating(int rating) { bankRating = rating; }
+    void setScore(double newScore);
+    void setBankRating(int rating);
 
     double calculateIncome(double amount) const;
 };
