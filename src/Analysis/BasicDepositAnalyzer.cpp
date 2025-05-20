@@ -1,7 +1,4 @@
 ﻿#include "BasicDepositAnalyzer.h"
-#include <algorithm>
-#include <iostream>
-#include <cmath>
 
 std::vector<std::shared_ptr<Deposit>> BasicDepositAnalyzer::analyze(
     const std::vector<std::shared_ptr<Deposit>>& deposits,

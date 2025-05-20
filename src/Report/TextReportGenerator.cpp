@@ -1,8 +1,8 @@
 #include "TextReportGenerator.h"
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <algorithm>
+//#include <fstream>
+//#include <iomanip>
+//#include <iostream>
+//#include <algorithm>
 #pragma execution_character_set("utf-8")
 
 double calculateGeneralScore(const std::shared_ptr<Deposit>& deposit) {

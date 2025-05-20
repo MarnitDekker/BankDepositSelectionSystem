@@ -1,6 +1,6 @@
 #include "Deposit.h"
-#include <cmath>
-#include <iostream>
+//#include <cmath>
+//#include <iostream>
 #pragma execution_character_set("utf-8")
 
 Deposit::Deposit(int id, const std::string& name, double rate, int term,

@@ -1,5 +1,6 @@
 #pragma once
 #include "IRecommendationStrategy.h"
+#include <iterator>
 
 class TopRateStrategy : public IRecommendationStrategy {
 public:

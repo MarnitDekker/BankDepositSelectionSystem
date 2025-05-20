@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iomanip>
 #include <windows.h>
-#include <algorithm>
+//#include <algorithm>
 #pragma execution_character_set("utf-8")
 
 static double calculateGeneralScore(const std::shared_ptr<Deposit>& deposit) {
@@ -55,7 +55,8 @@ void HTMLReportGenerator::generateReport(
             << "<td>" << deposit->getName() << "</td>"
             << "<td>" << deposit->getInterestRate() << "%</td>"
             << "<td>" << deposit->getTermMonths() << " мес.</td>"
-            << "<td>" << deposit->getMinAmount() << " руб.</td>"
+            << "<td>" << std::to_string(static_cast<long long>(deposit->getMinAmount())) << " руб.</td>"
+            /*<< "<td>" << deposit->getMinAmount() << " руб.</td>"*/
             << "<td>" << (deposit->isReplenishable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->isWithdrawable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->hasCapitalization() ? "Да" : "Нет") << "</td>"
@@ -91,7 +92,8 @@ void HTMLReportGenerator::generateReport(
             << "<td>" << deposit->getName() << "</td>"
             << "<td>" << deposit->getInterestRate() << "%</td>"
             << "<td>" << deposit->getTermMonths() << " мес.</td>"
-            << "<td>" << deposit->getMinAmount() << " руб.</td>"
+            << "<td>" << std::to_string(static_cast<long long>(deposit->getMinAmount())) << " руб.</td>"
+            //<< "<td>" << deposit->getMinAmount() << " руб.</td>"
             << "<td>" << (deposit->isReplenishable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->isWithdrawable() ? "Да" : "Нет") << "</td>"
             << "<td>" << (deposit->hasCapitalization() ? "Да" : "Нет") << "</td>"

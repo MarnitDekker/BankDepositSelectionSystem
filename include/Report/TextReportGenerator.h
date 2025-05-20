@@ -1,5 +1,7 @@
 #pragma once
 #include "IReportGenerator.h"
+#include <iostream>
+#include <fstream>
 
 class TextReportGenerator : public IReportGenerator {
 public:

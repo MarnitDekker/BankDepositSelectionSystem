@@ -1,9 +1,11 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include "Deposit.h"
-#include "Client.h"
+//#include <vector>
+//#include <memory>
+//#include "Deposit.h"
+//#include "Client.h"
 #include "IDepositAnalyzer.h"
+#include <algorithm>
+#include <iostream>
 
 class BasicDepositAnalyzer : public IDepositAnalyzer {
 public:

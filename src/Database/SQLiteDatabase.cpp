@@ -1,8 +1,8 @@
 #include "SQLiteDatabase.h"
-#include <iostream>
-#include <stdexcept>
-#include <sqlite3.h>
-#include <filesystem>
+//#include <iostream>
+//#include <stdexcept>
+//#include <sqlite3.h>
+//#include <filesystem>
 #pragma execution_character_set("utf-8")
 
 SQLiteDatabase::SQLiteDatabase(const std::string& dbPath)
@@ -80,7 +80,6 @@ bool SQLiteDatabase::initializeDatabase() {
         "CREATE TABLE IF NOT EXISTS deposit_scores ("
         "deposit_id INTEGER PRIMARY KEY,"
         "score REAL NOT NULL,"
-        "calculation_date TEXT DEFAULT CURRENT_TIMESTAMP,"
         "FOREIGN KEY (deposit_id) REFERENCES deposits(id));";
 
     if (!executeSQL(createBanksTable) ||
@@ -171,27 +170,29 @@ std::vector<std::shared_ptr<Deposit>> SQLiteDatabase::getAllDeposits() {
     return deposits;
 }
 
-bool SQLiteDatabase::saveDepositScores(
-    const std::vector<std::shared_ptr<Deposit>>& deposits) {
-
+bool SQLiteDatabase::saveDepositScores(const std::vector<std::shared_ptr<Deposit>>& deposits) {
     if (!executeSQL("BEGIN TRANSACTION;")) return false;
-
     if (!executeSQL("DELETE FROM deposit_scores;")) {
         executeSQL("ROLLBACK;");
         return false;
     }
-
+    const char* sql = "INSERT INTO deposit_scores (deposit_id, score) VALUES (?, ?);";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        executeSQL("ROLLBACK;");
+        return false;
+    }
     for (const auto& deposit : deposits) {
-        std::string sql = "INSERT INTO deposit_scores (deposit_id, score) VALUES (" +
-            std::to_string(deposit->getId()) + ", " +
-            std::to_string(deposit->getScore()) + ");";
-
-        if (!executeSQL(sql)) {
+        sqlite3_bind_int(stmt, 1, deposit->getId());
+        sqlite3_bind_double(stmt, 2, deposit->getScore());
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
             executeSQL("ROLLBACK;");
             return false;
         }
+        sqlite3_reset(stmt);
     }
-
+    sqlite3_finalize(stmt);
     return executeSQL("COMMIT;");
 }
 

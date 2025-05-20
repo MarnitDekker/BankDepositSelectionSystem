@@ -1,12 +1,5 @@
-#include "../AppController.h"
+#include "AppController.h"
 #include "Factory.h"
-//#include <iostream>
-//#include <fstream>
-//#include <chrono>
-//#include <windows.h>
-//#include <limits> 
-//#include <filesystem>
-//#include <algorithm>
 
 #pragma execution_character_set("utf-8")
 
@@ -105,8 +98,8 @@ void AppController::logUserQuery(const Client& client) const {
     std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", &tm_buf);
 
     out << "[" << timestamp << "] "
-        << "Сумма: " << client.getAmount() << " руб., "
-        << "Срок: " << client.getTerm() << " мес., "
+        << "Сумма: " << std::to_string(static_cast<long long>(client.getAmount())) << " руб., "
+        << "Срок: " << std::to_string(static_cast<long long>(client.getTerm())) << " мес., "
         << "Пополнение: " << (client.needsReplenishable() ? "Да" : "Нет") << ", "
         << "Снятие: " << (client.needsWithdrawable() ? "Да" : "Нет") << "\n";
 }

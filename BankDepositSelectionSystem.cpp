@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <fcntl.h>
 #include <io.h>
+#include <locale>
 
 #pragma execution_character_set("utf-8")
 
@@ -202,6 +203,8 @@ int main() {
     SetConsoleCP(1251);
 
     std::locale::global(std::locale("ru_RU.utf8"));
+    std::remove("deposit_report.html");
+    std::ofstream("user_queries.log", std::ios::trunc).close();
 
     try {
         auto db = std::make_unique<SQLiteDatabase>(getDatabasePath().string());

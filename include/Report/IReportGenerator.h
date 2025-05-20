@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "Deposit.h"
 
 class IReportGenerator {

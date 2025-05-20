@@ -1,6 +1,6 @@
 #include "../Recommendation/TopRateStrategy.h"
-#include <algorithm>
-#include <iterator>
+//#include <algorithm>
+//#include <iterator>
 
 std::vector<std::shared_ptr<Deposit>> TopRateStrategy::recommend(
     const std::vector<std::shared_ptr<Deposit>>& deposits,
