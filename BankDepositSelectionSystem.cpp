@@ -1,5 +1,4 @@
-﻿#include "BankDepositSelectionSystem.h"
-#include "include/Database/SQLiteDatabase.h"
+﻿#include "include/Database/SQLiteDatabase.h"
 #include "include/Analysis/BasicDepositAnalyzer.h"
 #include "include/Client.h"
 #include "include/AppController.h"
