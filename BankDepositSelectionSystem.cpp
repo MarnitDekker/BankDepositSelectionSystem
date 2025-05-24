@@ -16,7 +16,6 @@ int main() {
         std::filesystem::path dbPath;
         {
             std::filesystem::path projectRoot = std::filesystem::current_path();
-            std::cout << std::filesystem::current_path() << std::endl;
             bool found = false;
 
             for (int i = 0; i < 5; ++i) {
@@ -40,8 +39,11 @@ int main() {
             throw std::runtime_error("Не удалось подключиться к базе данных");
         }
 
-        AppController app(std::move(db), std::make_unique<BasicDepositAnalyzer>());
-        UserInterface ui(&app);
+        auto analyzer = std::make_unique<BasicDepositAnalyzer>();
+
+        std::shared_ptr<AppController> app_ptr = std::make_shared<AppController>(std::move(db), std::move(analyzer));
+
+        UserInterface ui(app_ptr);
         ui.runMainLoop();
 
     } catch (const std::exception& e) {

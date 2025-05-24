@@ -10,4 +10,6 @@ public:
     virtual std::vector<std::shared_ptr<Deposit>> analyze(
         const std::vector<std::shared_ptr<Deposit>>& deposits,
         const Client& client) = 0;
+    virtual double calculateDepositScore(
+        const Deposit& deposit) const = 0;
 };

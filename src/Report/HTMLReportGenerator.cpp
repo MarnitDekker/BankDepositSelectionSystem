@@ -1,29 +1,12 @@
 #include "HTMLReportGenerator.h"
-//#include <fstream>
-//#include <iomanip>
-//#include <windows.h>
 #pragma execution_character_set("utf-8")
-
-static double calculateGeneralScore(const std::shared_ptr<Deposit>& deposit) {
-    double score = 0.0;
-
-    score += deposit->getInterestRate() * 10;
-
-    if (deposit->hasCapitalization()) score += 5;
-    if (deposit->isReplenishable()) score += 3;
-    if (deposit->isWithdrawable()) score += 2;
-
-    if (deposit->isEarlyWithdrawalPenalized()) score -= 5;
-
-    score += deposit->getBankRating() * 2;
-
-    return score;
-}
 
 void HTMLReportGenerator::generateReport(
     const std::vector<std::shared_ptr<Deposit>>& recommended,
     const std::vector<std::shared_ptr<Deposit>>& allDeposits,
     const std::string& filename) {
+
+    std::string reportFilename = filename.empty() ? "deposit_report.html" : filename;
 
     std::ofstream out(filename, std::ios::out | std::ios::trunc);
     if (!out) return;
@@ -74,9 +57,10 @@ void HTMLReportGenerator::generateReport(
 
 
     std::vector<std::shared_ptr<Deposit>> sortedDeposits = allDeposits;
+    BasicDepositAnalyzer analyzer;
 
     for (auto& deposit : sortedDeposits) {
-        deposit->setScore(calculateGeneralScore(deposit));
+        deposit->setScore(analyzer.calculateDepositScore(*deposit));
     }
 
     std::sort(sortedDeposits.begin(), sortedDeposits.end(),

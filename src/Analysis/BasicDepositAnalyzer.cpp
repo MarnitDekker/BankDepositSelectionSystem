@@ -15,11 +15,11 @@ std::vector<std::shared_ptr<Deposit>> BasicDepositAnalyzer::analyze(
         bool withdrawableOk = !client.needsWithdrawable() || deposit->isWithdrawable();
 
         if (replenishableOk && withdrawableOk) {
-            double score = calculateDepositScore(*deposit, client);
+            double score = calculateDepositScore(*deposit);
             deposit->setScore(score);
             suitableDeposits.push_back(deposit);
         } else if (replenishableOk || withdrawableOk) {
-            double score = calculateDepositScore(*deposit, client) - 10;
+            double score = calculateDepositScore(*deposit) - 10;
             deposit->setScore(score);
             partialDeposits.push_back(deposit);
         }
@@ -39,7 +39,7 @@ std::vector<std::shared_ptr<Deposit>> BasicDepositAnalyzer::analyze(
 }
 
 double BasicDepositAnalyzer::calculateDepositScore(
-    const Deposit& deposit, const Client& client) const {
+    const Deposit& deposit) const {
 
     double score = 0.0;
 

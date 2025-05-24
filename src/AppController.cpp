@@ -53,9 +53,7 @@ void AppController::processClientRequest(const Client& client) {
 
         if (reportGen) {
             if (reportChoice == 1) {
-                if (auto textGen = dynamic_cast<TextReportGenerator*>(reportGen.get())) {
-                    textGen->printToConsole(suitableDeposits);
-                }
+                reportGen->generateReport(suitableDeposits, database->getAllDeposits());
             } else {
                 reportGen->generateReport(suitableDeposits, database->getAllDeposits(), "deposit_report.html");
             }

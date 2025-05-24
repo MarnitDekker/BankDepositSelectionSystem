@@ -6,8 +6,6 @@
 #include "IReportGenerator.h"
 #include "TextReportGenerator.h"
 #include "Client.h"
-//#include <iostream>
-//#include <fstream>
 #include <chrono>
 #include <windows.h>
 #include <filesystem>

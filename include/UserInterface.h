@@ -4,9 +4,9 @@
 
 class UserInterface {
 private:
-    AppController* app;
+    std::shared_ptr<AppController> app;
 public:
-    explicit UserInterface(AppController* controller);
+    explicit UserInterface(std::shared_ptr<AppController> controller);
 
     Client createClient();
     void adminMenu();

@@ -1,5 +1,6 @@
 #pragma once
 #include "IReportGenerator.h"
+#include "BasicDepositAnalyzer.h"
 #include <iostream>
 #include <fstream>
 
@@ -8,8 +9,5 @@ public:
     void generateReport(
         const std::vector<std::shared_ptr<Deposit>>& recommended,
         const std::vector<std::shared_ptr<Deposit>>& allDeposits,
-        const std::string& filename) override;
-
-    void printToConsole(
-        const std::vector<std::shared_ptr<Deposit>>& deposits) const;
+        const std::string& filename = "") override;
 };

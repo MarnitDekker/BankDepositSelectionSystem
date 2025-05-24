@@ -1,7 +1,7 @@
 #include "../UserInterface.h"
 #pragma execution_character_set("utf-8")
 
-UserInterface::UserInterface(AppController* controller)
+UserInterface::UserInterface(std::shared_ptr<AppController> controller)
     : app(controller) {
 }
 

@@ -102,29 +102,29 @@ void SQLiteDatabase::insertSampleData() {
     if (sqlite3_prepare_v2(db, checkData, -1, &stmt, nullptr) == SQLITE_OK) {
         if (sqlite3_step(stmt) == SQLITE_ROW && sqlite3_column_int(stmt, 0) == 0) {
             const std::vector<std::string> insertQueries = {
-                "INSERT INTO banks (name, license, rating) VALUES ('Сбербанк', '1234', 4.8);",
-                "INSERT INTO banks (name, license, rating) VALUES ('ВТБ', '5678', 4.5);",
-                "INSERT INTO banks (name, license, rating) VALUES ('Тинькофф', '9012', 4.3);",
+                "INSERT INTO banks (name, license, rating) VALUES ('Bank1', '1234', 4.8);",
+                "INSERT INTO banks (name, license, rating) VALUES ('Bank2', '5678', 4.5);",
+                "INSERT INTO banks (name, license, rating) VALUES ('Bank3', '9012', 4.3);",
 
                 "INSERT INTO deposits (bank_id, name, interest_rate, term_months, min_amount, "
                 "replenishable, withdrawable, capitalization, early_withdrawal_penalty) VALUES "
-                "(1, 'Пополняемый', 6.5, 12, 50000, 1, 0, 1, 1);",
+                "(1, 'Deposit1', 6.5, 12, 50000, 1, 0, 1, 1);",
 
                 "INSERT INTO deposits (bank_id, name, interest_rate, term_months, min_amount, "
                 "replenishable, withdrawable, capitalization, early_withdrawal_penalty) VALUES "
-                "(1, 'Классический', 7.0, 24, 10000, 1, 0, 0, 1);",
+                "(1, 'Deposit2', 7.0, 24, 10000, 1, 0, 0, 1);",
 
                 "INSERT INTO deposits (bank_id, name, interest_rate, term_months, min_amount, "
                 "replenishable, withdrawable, capitalization, early_withdrawal_penalty) VALUES "
-                "(2, 'Максимальный доход', 8.5, 36, 100000, 0, 0, 1, 1);",
+                "(2, 'Deposit3', 8.5, 36, 100000, 0, 0, 1, 1);",
 
                 "INSERT INTO deposits (bank_id, name, interest_rate, term_months, min_amount, "
                 "replenishable, withdrawable, capitalization, early_withdrawal_penalty) VALUES "
-                "(3, 'Универсальный', 7.2, 12, 30000, 1, 1, 0, 0);",
+                "(3, 'Deposit4', 7.2, 12, 30000, 1, 1, 0, 0);",
 
                 "INSERT INTO deposits (bank_id, name, interest_rate, term_months, min_amount, "
                 "replenishable, withdrawable, capitalization, early_withdrawal_penalty) VALUES "
-                "(3, 'Оптимальный', 7.8, 6, 50000, 0, 0, 1, 1);"
+                "(3, 'Deposit5', 7.8, 6, 50000, 0, 0, 1, 1);"
             };
 
             for (const auto& query : insertQueries) {
