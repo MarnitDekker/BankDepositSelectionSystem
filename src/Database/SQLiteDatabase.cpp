@@ -272,3 +272,22 @@ bool SQLiteDatabase::deleteDeposit(int depositId) {
     std::string sql = "DELETE FROM deposits WHERE id = " + std::to_string(depositId) + ";";
     return executeSQL(sql);
 }
+
+std::vector<Bank> SQLiteDatabase::getAllBanksDetailed() {
+    std::vector<Bank> banks;
+    const char* sql = "SELECT id, name, license, rating FROM banks ORDER BY name;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            banks.emplace_back(
+                sqlite3_column_int(stmt, 0),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)),
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)),
+                sqlite3_column_double(stmt, 3)
+            );
+        }
+        sqlite3_finalize(stmt);
+    }
+    return banks;
+}

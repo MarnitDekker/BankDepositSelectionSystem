@@ -138,6 +138,22 @@ void AppController::showAllDeposits() const {
     }
 }
 
+void AppController::showAllBanksDetailed() const {
+    auto banks = database->getAllBanksDetailed();
+    if (banks.empty()) {
+        std::cout << "В системе нет доступных банков.\n";
+        return;
+    }
+
+    std::cout << "\nСписок всех доступных банков:\n";
+    for (const auto& bank : banks) {
+        std::cout << "ID: " << bank.getId() << "\n";
+        std::cout << "   Название: " << bank.getName() << "\n";
+        std::cout << "   Лицензия: " << bank.getLicense() << "\n";
+        std::cout << "   Рейтинг: " << bank.getRating() << "\n\n";
+    }
+}
+
 std::string AppController::cp1251_to_utf8(const std::string& cp1251str) const {
     int wchars_num = MultiByteToWideChar(1251, 0, cp1251str.c_str(), -1, NULL, 0);
     std::wstring wstr(wchars_num, 0);

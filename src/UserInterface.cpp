@@ -131,7 +131,8 @@ void UserInterface::adminMenu() {
         std::cout << "3. Просмотреть историю запросов пользователей\n";
         std::cout << "4. Добавить новый банк\n";
         std::cout << "5. Удалить банк\n";
-        std::cout << "6. Выйти в главное меню\n";
+        std::cout << "6. Просмотреть все банки\n";
+        std::cout << "7. Выйти в главное меню\n";
         std::cout << "Выберите действие: " << std::flush;
         int choice;
         if (!(std::cin >> choice)) {
@@ -161,6 +162,10 @@ void UserInterface::adminMenu() {
             break;
         }
         case 6: {
+            app->showAllBanksDetailed();
+            break;
+        }
+        case 7: {
             return;
         }
         default: {

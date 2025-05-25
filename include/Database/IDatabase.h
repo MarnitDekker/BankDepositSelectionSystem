@@ -1,5 +1,6 @@
 #pragma once
 #include "Deposit.h"
+#include "Bank.h"
 #include <vector>
 #include <memory>
 
@@ -17,4 +18,5 @@ public:
     virtual bool addBank(const std::string& name, const std::string& license, double rating) = 0;
     virtual bool deleteBank(int bankId) = 0;
     virtual bool deleteDeposit(int depositId) = 0;
+    virtual std::vector<Bank> getAllBanksDetailed() = 0;
 };

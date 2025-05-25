@@ -29,6 +29,7 @@ public:
     void showAllDeposits() const;
     void logUserQuery(const Client& client) const;
     std::vector<std::shared_ptr<Deposit>> getAllDeposits() const;
+    void showAllBanksDetailed() const;
 
     void showUserQueryHistory() const;
     void handleAddDeposit();
